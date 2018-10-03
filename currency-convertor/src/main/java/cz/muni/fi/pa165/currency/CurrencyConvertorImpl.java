@@ -3,6 +3,8 @@ package cz.muni.fi.pa165.currency;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -13,7 +15,7 @@ import java.util.Currency;
 public class CurrencyConvertorImpl implements CurrencyConvertor {
 
     private final ExchangeRateTable exchangeRateTable;
-    //private final Logger logger = LoggerFactory.getLogger(CurrencyConvertorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(CurrencyConvertorImpl.class);
 
     public CurrencyConvertorImpl(ExchangeRateTable exchangeRateTable) {
         this.exchangeRateTable = exchangeRateTable;
@@ -21,16 +23,32 @@ public class CurrencyConvertorImpl implements CurrencyConvertor {
 
     @Override
     public BigDecimal convert(Currency sourceCurrency, Currency targetCurrency, BigDecimal sourceAmount) throws ExternalServiceFailureException {
+        logger.trace("Convert function called");
+
         if(sourceCurrency == null || targetCurrency == null || sourceAmount == null)
             throw new IllegalArgumentException("Null value!");
 
         BigDecimal result;
-        BigDecimal rate;
+        BigDecimal rate = BigDecimal.ONE;
 
-        rate = exchangeRateTable.getExchangeRate(sourceCurrency, targetCurrency);
+        try
+        {
+            rate = exchangeRateTable.getExchangeRate(sourceCurrency, targetCurrency);
+        }
+        catch (Exception ex)
+        {
+            if (ex instanceof ExternalServiceFailureException)
+            {
+                logger.error("External service failure!");
+                throw ex;
+            }
+        }
 
         if(rate == null)
+        {
+            logger.warn("Unknown exchange!");
             throw new UnknownExchangeRateException("Unkown exchange");
+        }
 
 
 
