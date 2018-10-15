@@ -1,5 +1,10 @@
 package cz.muni.fi.pa165.currency;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
@@ -10,11 +15,14 @@ import java.util.Currency;
  *
  * @author petr.adamek@embedit.cz
  */
+@Named
 public class CurrencyConvertorImpl implements CurrencyConvertor {
 
     private final ExchangeRateTable exchangeRateTable;
     //private final Logger logger = LoggerFactory.getLogger(CurrencyConvertorImpl.class);
 
+    @Inject
+    @Autowired
     public CurrencyConvertorImpl(ExchangeRateTable exchangeRateTable) {
         this.exchangeRateTable = exchangeRateTable;
     }

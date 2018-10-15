@@ -1,8 +1,11 @@
 package cz.muni.fi.pa165.currency;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.Currency;
 
+@Named
 public class ExchangeRateTableImpl implements ExchangeRateTable
 {
 
